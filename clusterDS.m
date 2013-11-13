@@ -59,7 +59,7 @@ while ~isempty(remaining)
     X(nSets, remaining)          = x;
     P(nSets)                     = x'*currentA*x; % Internal coherency (average payoff)
     
-    remaining = remaining(x==0);
+    remaining = remaining(x<cut_off_val);
     currentA  = A(remaining,remaining); % Peeling-off strategy
 end
 % disp(sprintf('A total of %d dominant sets are extracted', nSets));
