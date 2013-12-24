@@ -23,11 +23,11 @@ function [clusters charVectors prototypeIndices payoffs nCluster] = clusterDS(A,
 % edited by Eren Golge, Aug 29 2013
 
 if ~exist('epsilon','var')
-    epsilon = 2e-4;
+    epsilon = 2e-6;
 end
 
 if ~exist('iter_thresh','var')
-    iter_thresh = 1e+3;
+    iter_thresh = 1e+4;
 end
 
 if strcmp(criterion,'MaxClust')
