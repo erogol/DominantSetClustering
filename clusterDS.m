@@ -20,10 +20,10 @@ function [clusters charVectors prototypeIndices payoffs nCluster] = clusterDS(A,
 %           nCluster    - total number of extracted clusters
 %
 % implementation by Aykut Erdem, 15.12.2010
-% edited by Eren Golge, Aug 29 2013
+% deeply edited by Eren Golge,2014
 
 if ~exist('epsilon','var')
-    epsilon = 2e-6;
+    epsilon = 0.001;
 end
 
 if ~exist('iter_thresh','var')
@@ -45,22 +45,27 @@ dominantSets = zeros(1,nPts);
 X = zeros(1,nPts);
 P = zeros(1,nPts);
 currentA = A;
-
+%A_norm = bsxfun(@rdivide,A,sum(A,2));
 % find dominant sets unless no data remain
+counter = 1;
 while ~isempty(remaining)
+    %x = A_norm(remaining(randi(numel(remaining))),remaining)'; % random
+    %init 
     x = ones(size(currentA,1),1);
-    x = x ./ sum(x);% Start from barycenter of the simplex
+    x = x / sum(x);% Start from barycenter of the simplex
     
     % replicator dynamics optimization
-    x = replicator_dynamics_optimization(x,currentA,iter_thresh, epsilon);
+    [x, iterno] = replicator_dynamics_optimization(x,currentA,iter_thresh, epsilon);
     nSets = nSets+1;
-    cut_off_val = median(x);
+    %cut_off_val = median(x);
+    cut_off_val = eps;
     dominantSets(remaining(x>cut_off_val)) = nSets;
     X(nSets, remaining)          = x;
     P(nSets)                     = x'*currentA*x; % Internal coherency (average payoff)
     
     remaining = remaining(x<cut_off_val);
     currentA  = A(remaining,remaining); % Peeling-off strategy
+    counter = counter + 1;
 end
 % disp(sprintf('A total of %d dominant sets are extracted', nSets));
 
